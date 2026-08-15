@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#1A4D8F" />
+<title>MUNICIPIA · Ayuntamiento de Montemayor</title>
+<link rel="icon" href="IMAGENES/LOGO-MUNICIPIA.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+
+  <!-- ============ PANTALLA 1: ACCESO ============ -->
+  <section id="auth-screen" class="auth-screen">
+    <div class="auth-bg" aria-hidden="true"></div>
+
+    <div class="auth-card">
+      <div class="auth-brand">
+        <img src="IMAGENES/LOGO-MUNICIPIA.png" alt="Logo Municipia" class="auth-logo" />
+        <p class="auth-claim">Gestión municipal inteligente<br /><strong>Ayuntamiento de Montemayor</strong></p>
+      </div>
+
+      <div class="auth-tabs" role="tablist">
+        <button class="auth-tab is-active" role="tab" data-authtab="login">Iniciar sesión</button>
+        <button class="auth-tab" role="tab" data-authtab="signup">Solicitar acceso</button>
+      </div>
+
+      <!-- Login -->
+      <form id="form-login" class="auth-form" autocomplete="on" novalidate>
+        <label class="field">
+          <span>Correo electrónico (usuario)</span>
+          <input type="email" name="email" placeholder="nombre@montemayor.es" required autocomplete="username" />
+        </label>
+        <label class="field">
+          <span>Contraseña</span>
+          <span class="pass-wrap">
+            <input type="password" name="password" placeholder="••••••••" required autocomplete="current-password" minlength="4" />
+            <button type="button" class="pass-toggle" data-toggle-pass aria-label="Mostrar contraseña">👁</button>
+          </span>
+        </label>
+        <div class="auth-msg" id="login-msg" role="status"></div>
+        <button class="btn btn-primary btn-block" type="submit">Entrar</button>
+        <p class="auth-help">¿No tienes cuenta? Solicita acceso: el Ayuntamiento validará tu alta por correo.</p>
+      </form>
+
+      <!-- Alta -->
+      <form id="form-signup" class="auth-form is-hidden" novalidate>
+        <div class="grid-2">
+          <label class="field">
+            <span>Nombre y apellidos</span>
+            <input type="text" name="nombre" placeholder="Ej. Ana Ruiz Molina" required />
+          </label>
+          <label class="field">
+            <span>Cargo / puesto</span>
+            <input type="text" name="cargo" placeholder="Ej. Concejal de Cultura" required />
+          </label>
+        </div>
+        <label class="field">
+          <span>Área o concejalía</span>
+          <select name="area" required></select>
+        </label>
+        <label class="field">
+          <span>Correo electrónico (será tu usuario)</span>
+          <input type="email" name="email" placeholder="nombre@montemayor.es" required />
+        </label>
+        <div class="grid-2">
+          <label class="field">
+            <span>Contraseña</span>
+            <input type="password" name="password" placeholder="Mínimo 6 caracteres" required minlength="6" />
+          </label>
+          <label class="field">
+            <span>Repetir contraseña</span>
+            <input type="password" name="password2" required minlength="6" />
+          </label>
+        </div>
+        <label class="check">
+          <input type="checkbox" name="rgpd" required />
+          <span>Acepto el tratamiento de mis datos para la gestión interna municipal (RGPD).</span>
+        </label>
+        <div class="auth-msg" id="signup-msg" role="status"></div>
+        <button class="btn btn-primary btn-block" type="submit">Enviar solicitud de acceso</button>
+        <p class="auth-help">La solicitud se envía a <strong>alinares.blanco@gmail.com</strong> para su autorización.</p>
+      </form>
+
+      <footer class="auth-foot">
+        <span class="dot-sec"></span> Acceso restringido a personal municipal autorizado
+      </footer>
+    </div>
+  </section>
+
+  <!-- ============ APLICACIÓN ============ -->
+  <div id="app-shell" class="app-shell is-hidden">
+
+    <!-- Cabecera fija -->
+    <header class="app-header" id="app-header">
+      <div class="hdr-left">
+        <img src="IMAGENES/escudo ayuntamiento.png" alt="Escudo del Ayuntamiento de Montemayor" class="hdr-shield" />
+      </div>
+      <div class="hdr-center">
+        <h1 class="hdr-title">Ayuntamiento de Montemayor</h1>
+        <p class="hdr-sub" id="hdr-view-name">Inicio</p>
+      </div>
+      <div class="hdr-right">
+        <button class="hdr-icon" id="btn-alerts" title="Alertas" aria-label="Alertas">
+          🔔<span class="badge" id="alert-badge">0</span>
+        </button>
+        <button class="hdr-avatar" id="btn-profile" title="Mi perfil" aria-label="Mi perfil"></button>
+      </div>
+    </header>
+
+    <!-- Menú lateral -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sb-brand">
+        <img src="IMAGENES/LOGO-MUNICIPIA.png" alt="Municipia" />
+      </div>
+      <nav class="sb-nav" id="sb-nav"></nav>
+      <button class="sb-logout" id="btn-logout">⏻ Cerrar sesión</button>
+    </aside>
+    <div class="sb-overlay" id="sb-overlay"></div>
+
+    <!-- Contenido -->
+    <main class="app-main" id="app-main">
+      <div id="view-root" class="view-root"></div>
+    </main>
+
+    <!-- Navegación inferior -->
+    <nav class="bottom-nav" id="bottom-nav"></nav>
+
+    <!-- Botón flotante de chat -->
+    <button class="fab-chat" id="fab-chat" aria-label="Abrir chat interno" title="Chat interno">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 3C6.98 3 3 6.36 3 10.5c0 2.3 1.24 4.35 3.2 5.72-.13 1.06-.6 2.3-1.53 3.4-.26.3.02.76.4.66 2.06-.52 3.6-1.4 4.55-2.06.75.16 1.55.28 2.38.28 5.02 0 9-3.36 9-7.5S17.02 3 12 3Z"/>
+        <circle cx="8.2" cy="10.5" r="1.15" class="dot"/>
+        <circle cx="12" cy="10.5" r="1.15" class="dot"/>
+        <circle cx="15.8" cy="10.5" r="1.15" class="dot"/>
+      </svg>
+      <span class="fab-badge" id="fab-badge">0</span>
+    </button>
+  </div>
+
+  <!-- Modal genérico -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal-box" role="dialog" aria-modal="true">
+      <div class="modal-head">
+        <h3 id="modal-title">Título</h3>
+        <button class="modal-x" id="modal-close" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <div class="toast-stack" id="toast-stack"></div>
+
+  <script src="assets/js/store.js"></script>
+  <script src="assets/js/seed.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/views/dashboard.js"></script>
+  <script src="assets/js/views/concejalias.js"></script>
+  <script src="assets/js/views/incidencias.js"></script>
+  <script src="assets/js/views/proyectos.js"></script>
+  <script src="assets/js/views/documentos.js"></script>
+  <script src="assets/js/views/calendario.js"></script>
+  <script src="assets/js/views/chat.js"></script>
+  <script src="assets/js/views/transparencia.js"></script>
+  <script src="assets/js/views/personal.js"></script>
+  <script src="assets/js/views/admin.js"></script>
+  <script src="assets/js/views/perfil.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
