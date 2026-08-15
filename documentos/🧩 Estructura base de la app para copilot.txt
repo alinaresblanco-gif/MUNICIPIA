@@ -1,0 +1,433 @@
+🧩 Estructura base de la app (los módulos imprescindibles)
+1. Panel de Concejales
+Cada concejal tiene:
+•	Perfil
+•	Competencias
+•	Documentos propios
+•	Tareas asignadas
+•	Calendario de su área
+•	Incidencias abiertas
+•	Indicadores de actividad
+Esto crea responsabilidad y claridad.
+2. Áreas y Concejalías
+Un módulo por área:
+•	Urbanismo
+•	Cultura
+•	Deportes
+•	Servicios
+•	Igualdad
+•	Juventud
+•	Medio ambiente
+•	Festejos
+•	Hacienda
+•	Alcaldía
+Cada área tiene:
+•	Documentos
+•	Proyectos
+•	Incidencias
+•	Agenda
+•	Personal asignado
+•	Presupuesto ejecutado
+3. Zona Común
+El “salón” del Ayuntamiento:
+•	Comunicados internos
+•	Actas
+•	Circulares
+•	Avisos urgentes
+•	Calendario general
+•	Documentos compartidos
+•	Panel de anuncios internos
+4. Gestor de Incidencias
+El corazón operativo. Cada incidencia tiene:
+•	Responsable
+•	Estado
+•	Fotos
+•	Ubicación
+•	Prioridad
+•	Historial
+•	Fecha estimada de resolución
+•	Notificaciones automáticas
+5. Área de Proyectos
+Para obras, actividades, eventos, mejoras. Incluye:
+•	Cronograma
+•	Presupuesto
+•	Proveedores
+•	Avances
+•	Documentación
+•	Riesgos
+•	Equipo implicado
+6. Documentoteca Municipal
+Todo ordenado por carpetas:
+•	Contratos
+•	Pliegos
+•	Informes
+•	Actas
+•	Presupuestos
+•	Normativas
+•	Planes estratégicos
+Con buscador inteligente.
+7. Chat interno por áreas
+Nada de WhatsApp. Chats por concejalía + chat general + chat por proyecto.
+8. Calendario inteligente
+Con:
+•	Reuniones
+•	Eventos
+•	Plazos administrativos
+•	Recordatorios automáticos
+•	Integración con Google Calendar
+9. Panel de Transparencia Interna
+Indicadores:
+•	Incidencias resueltas
+•	Proyectos en curso
+•	Gastos ejecutados
+•	Actividades realizadas
+•	Reuniones mantenidas
+10. Zona de Trabajo Personal
+Cada concejal tiene su espacio:
+•	Tareas
+•	Notas
+•	Documentos
+•	Recordatorios
+•	Agenda propia
+•	KPIs personales
+🚀 Ideas de mejora (las que harán que la app destaque)
+⭐ 1. Mapa vivo del municipio
+Un mapa donde se ve:
+•	Incidencias
+•	Proyectos
+•	Zonas de mantenimiento
+•	Actividades
+•	Obras
+•	Puntos críticos
+Visual, intuitivo y muy útil.
+⭐ 2. Sistema de votaciones internas
+Para decisiones rápidas:
+•	Prioridades
+•	Propuestas
+•	Cambios
+•	Aprobaciones
+⭐ 3. Historial de decisiones
+Cada decisión queda registrada:
+•	Quién la tomó
+•	Cuándo
+•	Por qué
+•	Documentos asociados
+Evita confusiones.
+⭐ 4. Integración con el Buzón de Incidencias Público
+Lo que reporta el ciudadano aparece directamente en la app de concejales.
+⭐ 5. Sistema de alertas inteligentes
+Alertas por:
+•	Plazos
+•	Incidencias urgentes
+•	Documentos pendientes
+•	Reuniones
+•	Cambios en proyectos
+⭐ 6. Panel de proveedores
+Con fichas:
+•	Contratos
+•	Contactos
+•	Historial
+•	Valoraciones internas
+⭐ 7. Módulo de comunicación externa
+Para preparar:
+•	Notas de prensa
+•	Publicaciones
+•	Informes
+•	Resúmenes mensuales
+⭐ 8. Sistema de permisos y roles
+Cada concejal ve solo lo que le corresponde. Profesionaliza la gestión.
+⭐ 9. Modo Alcaldía
+Un panel especial para el alcalde:
+•	Visión global
+•	Indicadores clave
+•	Estado del municipio
+•	Actividad de concejalías
+•	Alertas críticas
+⭐ 10. Integración con IA para resúmenes
+La app genera:
+•	Resúmenes de reuniones
+•	Informes automáticos
+•	Extractos de documentos
+•	Listas de tareas
+Arquitectura completa de la app municipal
+La arquitectura se basa en capas, siguiendo las recomendaciones de sistemas municipales modernos .
+🧩 1. Capa de Presentación (Front End)
+•	App móvil + versión tablet (React Native / Flutter).
+•	Panel web para administración (React / Angular).
+•	Diseño accesible WCAG (contrastes, textos claros) .
+•	Módulos visibles según rol (concejal, alcalde, técnico).
+Componentes principales:
+•	Inicio / Dashboard
+•	Concejalías
+•	Incidencias
+•	Proyectos
+•	Documentoteca
+•	Calendario
+•	Chat interno
+•	Transparencia
+•	Zona personal
+🧩 2. Capa de Lógica y Servicios (Back End)
+Basada en principios GovTech: API-first, auditabilidad y modularidad .
+Servicios principales:
+•	API Gateway
+•	Autenticación IAM + SSO
+•	Gestor de documentos
+•	Motor de incidencias
+•	Motor de proyectos
+•	Sistema de notificaciones
+•	Chat interno
+•	Geolocalización + GIS
+•	Workflow Engine (aprobaciones, estados)
+•	Bus de eventos (para alertas y sincronización)
+🧩 3. Capa de Datos
+•	 
+•	 
+•	 
+•	 
+Tablas clave:
+•	concejales
+•	concejalías
+•	incidencias
+•	proyectos
+•	documentos
+•	roles
+•	permisos
+•	agenda
+•	proveedores
+•	historial_acciones
+•	mensajes_chat
+Incluye MDM municipal (direcciones, códigos, zonas) como recomienda la arquitectura pública .
+🧩 4. Integraciones externas
+•	Google Calendar
+•	GIS municipal
+•	Registro de incidencias ciudadanas
+•	ERP municipal (RRHH, contratos, proveedores)
+•	Email / SMS
+•	Firma digital
+🗺️ Mapa completo de pantallas
+Organizado por módulos, como un organigrama visual.
+•	 
+•	 
+•	 
+•	 
+🟦 1. Inicio / Dashboard
+•	Resumen del día
+•	Incidencias urgentes
+•	Próximas reuniones
+•	Documentos recientes
+•	Actividad de concejalías
+🟦 2. Concejalías
+•	Lista de concejalías
+•	Ficha de cada área
+o	Proyectos
+o	Incidencias
+o	Documentos
+o	Agenda
+o	Personal asignado
+🟦 3. Incidencias
+•	Mapa vivo
+•	Lista filtrada
+•	Crear incidencia
+•	Detalle
+•	Historial
+•	Fotos
+•	Estados
+•	Asignación de responsable
+🟦 4. Proyectos
+•	Lista de proyectos
+•	Cronograma
+•	Presupuesto
+•	Equipo
+•	Documentos
+•	Avances
+•	Riesgos
+🟦 5. Documentoteca
+•	Carpetas
+•	Buscador
+•	Filtros
+•	Documentos recientes
+•	Versionado
+🟦 6. Calendario
+•	Agenda personal
+•	Agenda municipal
+•	Reuniones
+•	Eventos
+•	Plazos administrativos
+🟦 7. Chat interno
+•	Chat general
+•	Chat por concejalía
+•	Chat por proyecto
+•	Chat privado
+🟦 8. Transparencia interna
+•	Indicadores
+•	Actividad por concejalía
+•	Incidencias resueltas
+•	Proyectos activos
+•	Gastos ejecutados
+🟦 9. Zona personal
+•	Tareas
+•	Notas
+•	Documentos propios
+•	KPIs personales
+•	Recordatorios
+🟦 10. Administración
+•	Gestión de usuarios
+•	Roles y permisos
+•	Configuración de concejalías
+•	Panel de proveedores
+•	Auditoría de acciones
+🔄 Flujo de usuario (end to end)
+Basado en flujos gubernamentales reales .
+•	 
+•	 
+•	 
+•	 
+Flujo 1: Concejal gestionando su día
+1.	Entra a la app (SSO).
+2.	Ve su dashboard.
+3.	Revisa incidencias asignadas.
+4.	Cambia estado de una incidencia.
+5.	Añade fotos o comentarios.
+6.	Consulta documentos del área.
+7.	Atiende reunión del calendario.
+8.	Actualiza avance de un proyecto.
+9.	Chatea con su equipo.
+10.	Cierra el día con un resumen automático.
+Flujo 2: Alcalde supervisando
+1.	Accede al modo Alcaldía.
+2.	Ve indicadores globales.
+3.	Revisa incidencias críticas.
+4.	Consulta proyectos estratégicos.
+5.	Envía comunicados internos.
+6.	Revisa actividad de concejalías.
+7.	Aprueba cambios o presupuestos.
+Flujo 3: Técnico municipal
+1.	Recibe incidencia asignada.
+2.	Consulta ubicación en mapa.
+3.	Añade fotos del trabajo.
+4.	Cambia estado a “En proceso”.
+5.	Cierra incidencia con informe.
+Flujo 4: Gestión documental
+1.	Concejal sube documento.
+2.	Se versiona automáticamente.
+3.	Se etiqueta por concejalía.
+4.	Se comparte con el equipo.
+5.	Se integra en un proyecto o incidencia.
+Flujo 5: Comunicación interna
+1.	Concejal envía mensaje en chat de área.
+2.	Equipo recibe notificación.
+3.	Se genera hilo de conversación.
+4.	Se vincula a proyecto o incidencia.
+Diseño visual corporativo de la app municipal
+El diseño debe transmitir institucionalidad, claridad, orden y modernidad. Aquí tienes la propuesta completa.
+🎨 Identidad visual
+•	Paleta institucional
+o	Azul institucional (#1A4D8F)
+o	Verde municipal (#3FA66B)
+o	Gris profesional (#F2F2F2)
+o	Negro suave (#1E1E1E)
+•	Tipografía
+o	Titulares: Montserrat
+o	Cuerpo: Inter
+o	Iconografía: estilo lineal, minimalista
+•	Estilo general
+o	Modular (tu estilo)
+o	Bordes redondeados
+o	Sombras suaves
+o	Mucho espacio en blanco
+o	Jerarquía visual clara
+•	 
+•	 
+🖼️ Componentes visuales
+•	Tarjetas modulares para concejalías
+•	Mapa vivo con colores por estado
+•	Indicadores con barras y círculos
+•	Documentos con iconos por tipo
+•	Chats con burbujas institucionales
+•	Calendario con colores por área
+🧭 Diseño de navegación
+•	Menú inferior (5 botones):
+1.	Inicio
+2.	Concejalías
+3.	Incidencias
+4.	Documentos
+5.	Perfil
+•	Menú lateral para funciones avanzadas
+•	Modo Alcaldía con color diferenciado
+2️⃣ Prototipo de pantallas (estructura visual completa)
+Aquí tienes el mapa visual de todas las pantallas principales.
+🟦 Inicio / Dashboard
+•	Tarjeta “Mi día”
+•	Incidencias urgentes
+•	Reuniones próximas
+•	Documentos recientes
+•	Actividad de concejalías
+•	Botón rápido: Crear incidencia
+•	 
+•	 
+🟦 Concejalías
+•	Lista de áreas (tarjetas)
+•	Ficha del área
+o	Proyectos
+o	Incidencias
+o	Documentos
+o	Agenda
+o	Equipo
+•	 
+•	 
+🟦 Incidencias
+•	Mapa vivo
+•	Lista filtrada
+•	Crear incidencia
+•	Detalle
+•	Historial
+•	Fotos
+•	Estados
+•	Asignación
+•	 
+•	 
+•	 
+•	 
+🟦 Proyectos
+•	Lista
+•	Cronograma
+•	Presupuesto
+•	Equipo
+•	Documentos
+•	Avances
+•	Riesgos
+🟦 Documentoteca
+•	Carpetas
+•	Buscador
+•	Documentos recientes
+•	Versionado
+•	Filtros
+🟦 Calendario
+•	Agenda personal
+•	Agenda municipal
+•	Reuniones
+•	Eventos
+•	Plazos administrativos
+•	 
+•	 
+🟦 Chat interno
+•	Chat general
+•	Chat por concejalía
+•	Chat por proyecto
+•	Chat privado
+•	 
+•	 
+•	 
+•	 
+🟦 Transparencia interna
+•	Indicadores
+•	Actividad por concejalía
+•	Incidencias resueltas
+•	Proyectos activos
+•	Gastos ejecutados
+🟦 Zona personal
+•	Tareas
+•	Notas
+•	Documentos propios
+•	KPIs personales
+•	Recordatorios
