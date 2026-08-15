@@ -269,7 +269,7 @@
   /* ---------- Arranque ---------- */
   document.addEventListener('DOMContentLoaded', function () {
     Store.init(global.SEED);
-    Auth.migrarSemilla().then(function () {
+    Auth.sincronizarUsuariosBase().then(function () {
       initAuthUI();
       initShell();
       var u = Auth.actual();

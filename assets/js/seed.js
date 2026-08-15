@@ -34,6 +34,7 @@
         { id: 'u-admin', nombre: 'Antonio Linares Blanco', email: 'alinares.blanco@gmail.com', cargo: 'Administrador del sistema', area: 'alcaldia', rol: 'admin', estado: 'activo', tempPass: 'municipia', alta: dias(-320) },
         { id: 'u-alcalde', nombre: 'Manuel Ortega Prieto', email: 'alcaldia@montemayor.es', cargo: 'Alcalde-Presidente', area: 'alcaldia', rol: 'alcalde', estado: 'activo', tempPass: 'municipia', alta: dias(-300) },
         { id: 'u-cultura', nombre: 'Ana Ruiz Molina', email: 'cultura@montemayor.es', cargo: 'Concejal de Cultura', area: 'cultura', rol: 'concejal', estado: 'activo', tempPass: 'municipia', alta: dias(-280) },
+        { id: 'u-soto', nombre: 'Antonio Soto', email: 'antonio.soto@deprueba.com', cargo: 'Concejal de Cultura', area: 'cultura', rol: 'concejal', estado: 'activo', tempPass: 'municipia1', alta: dias(-5) },
         { id: 'u-urb', nombre: 'Javier Cano Prados', email: 'urbanismo@montemayor.es', cargo: 'Concejal de Urbanismo', area: 'urbanismo', rol: 'concejal', estado: 'activo', tempPass: 'municipia', alta: dias(-275) },
         { id: 'u-serv', nombre: 'Lucía Vera Serrano', email: 'servicios@montemayor.es', cargo: 'Concejala de Servicios', area: 'servicios', rol: 'concejal', estado: 'activo', tempPass: 'municipia', alta: dias(-260) },
         { id: 'u-tec', nombre: 'Pedro Salas Jiménez', email: 'tecnico@montemayor.es', cargo: 'Técnico de obras', area: 'servicios', rol: 'tecnico', estado: 'activo', tempPass: 'municipia', alta: dias(-210) }

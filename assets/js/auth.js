@@ -29,6 +29,14 @@
     })).then(function () { Store.save(); });
   }
 
+  /* Añade los usuarios oficiales que aún no existan en el dispositivo (altas posteriores a la instalación). */
+  function sincronizarUsuariosBase() {
+    var base = (global.SEED ? global.SEED().usuarios : []) || [];
+    var nuevos = base.filter(function (u) { return !porEmail(u.email); });
+    nuevos.forEach(function (u) { Store.insert('usuarios', u); });
+    return migrarSemilla();
+  }
+
   function porEmail(email) {
     var e = String(email || '').trim().toLowerCase();
     return Store.get('usuarios').filter(function (u) { return u.email.toLowerCase() === e; })[0] || null;
@@ -183,6 +191,6 @@
     login: login, logout: logout, actual: actual, puede: puede,
     solicitarAcceso: solicitarAcceso, aprobar: aprobar, denegar: denegar,
     enlaceCorreo: enlaceCorreo, enviarCorreo: enviarCorreo,
-    migrarSemilla: migrarSemilla, porEmail: porEmail
+    migrarSemilla: migrarSemilla, sincronizarUsuariosBase: sincronizarUsuariosBase, porEmail: porEmail
   };
 })(window);
