@@ -18,28 +18,55 @@
 
   var vistaActual = 'dashboard';
   var vistaPrevia = 'dashboard';
+  var paramsActuales = null;
+
+  function pintarVista(id, params) {
+    if (!Views[id] || !Auth.puede(id)) id = 'dashboard';
+    if (id !== 'chat') vistaPrevia = id;
+    vistaActual = id;
+    paramsActuales = params || null;
+
+    var root = document.getElementById('view-root');
+    root.innerHTML = Views[id].render(params || {});
+    if (Views[id].mount) Views[id].mount(root);
+
+    document.getElementById('hdr-view-name').textContent = Views[id].titulo;
+    document.title = 'MUNICIPIA · ' + Views[id].titulo;
+    pintarNav();
+    global.scrollTo({ top: 0, behavior: 'smooth' });
+    cerrarSidebar();
+    actualizarFab();
+  }
 
   var App = {
     go: function (id, params) {
       if (!Views[id] || !Auth.puede(id)) id = 'dashboard';
-      if (id !== 'chat') vistaPrevia = id;
-      vistaActual = id;
-
-      var root = document.getElementById('view-root');
-      root.innerHTML = Views[id].render(params || {});
-      if (Views[id].mount) Views[id].mount(root);
-
-      document.getElementById('hdr-view-name').textContent = Views[id].titulo;
-      document.title = 'MUNICIPIA · ' + Views[id].titulo;
-      pintarNav();
-      document.getElementById('app-main').scrollTo ? window.scrollTo({ top: 0, behavior: 'smooth' }) : null;
-      cerrarSidebar();
-      actualizarFab();
+      var estado = { municipia: true, vista: id, params: params || null };
+      // volver a la misma vista (refrescos) no debe generar pasos de historial
+      if (id === vistaActual) history.replaceState(estado, '', '#' + id);
+      else history.pushState(estado, '', '#' + id);
+      pintarVista(id, params);
       return false;
     },
-    vista: function () { return vistaActual; }
+    vista: function () { return vistaActual; },
+    estado: function () { return { municipia: true, vista: vistaActual, params: paramsActuales }; }
   };
   global.App = App;
+
+  /* Botón «atrás» del móvil: cierra el modal o vuelve a la vista anterior */
+  global.addEventListener('popstate', function (e) {
+    if (UI.modalAbierto()) { UI.closeModal(true); return; }
+    if (sidebarAbierto) { cerrarSidebar(true); return; }
+    if (!Auth.actual()) return;
+    var st = e.state;
+    if (st && st.municipia && st.vista) pintarVista(st.vista, st.params);
+    else pintarVista(vistaDelHash());
+  });
+
+  function vistaDelHash() {
+    var h = (location.hash || '').replace('#', '');
+    return Views[h] && Auth.puede(h) ? h : 'dashboard';
+  }
 
   /* ---------- Navegación ---------- */
   function navPermitida() {
@@ -64,9 +91,23 @@
     });
   }
 
-  function cerrarSidebar() {
+  var sidebarAbierto = false;
+
+  function abrirSidebar() {
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('sb-overlay').classList.add('show');
+    if (!sidebarAbierto) {
+      sidebarAbierto = true;
+      history.pushState({ municipia: true, menu: true }, '', location.hash || '');
+    }
+  }
+
+  function cerrarSidebar(desdeHistorial) {
     document.getElementById('sidebar').classList.remove('open');
     document.getElementById('sb-overlay').classList.remove('show');
+    var estaba = sidebarAbierto;
+    sidebarAbierto = false;
+    if (estaba && !desdeHistorial) history.replaceState(App.estado(), '', '#' + App.vista());
   }
 
   function actualizarFab() {
@@ -92,15 +133,19 @@
     var b = document.getElementById('alert-badge');
     b.textContent = alertas;
     b.style.display = alertas ? 'grid' : 'none';
-    App.go('dashboard');
+    var inicio = vistaDelHash();
+    history.replaceState({ municipia: true, vista: inicio, params: null }, '', '#' + inicio);
+    pintarVista(inicio);
     UI.toast('Bienvenido/a a MUNICIPIA', user.nombre + ' · ' + user.cargo, 'ok');
   }
 
   function salir() {
     Auth.logout();
+    UI.closeModal(true);
     document.getElementById('app-shell').classList.add('is-hidden');
     document.getElementById('auth-screen').classList.remove('is-hidden');
     document.getElementById('form-login').reset();
+    history.replaceState(null, '', location.pathname);
   }
 
   /* ---------- Pantalla de acceso ---------- */
@@ -176,7 +221,7 @@
   function initShell() {
     document.getElementById('btn-logout').addEventListener('click', salir);
     document.getElementById('btn-profile').addEventListener('click', function () { App.go('perfil'); });
-    document.getElementById('sb-overlay').addEventListener('click', cerrarSidebar);
+    document.getElementById('sb-overlay').addEventListener('click', function () { cerrarSidebar(); });
 
     document.getElementById('fab-chat').addEventListener('click', function () {
       App.go(vistaActual === 'chat' ? vistaPrevia : 'chat');
@@ -198,14 +243,13 @@
     /* Menú lateral en móvil: el escudo abre la navegación */
     document.querySelector('.hdr-left').addEventListener('click', function () {
       if (global.innerWidth <= 900) {
-        document.getElementById('sidebar').classList.toggle('open');
-        document.getElementById('sb-overlay').classList.toggle('show');
+        if (sidebarAbierto) cerrarSidebar(); else abrirSidebar();
       } else {
         App.go('dashboard');
       }
     });
 
-    document.getElementById('modal-close').addEventListener('click', UI.closeModal);
+    document.getElementById('modal-close').addEventListener('click', function () { UI.closeModal(); });
     document.getElementById('modal').addEventListener('click', function (e) {
       if (e.target.id === 'modal') UI.closeModal();
     });

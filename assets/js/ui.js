@@ -23,19 +23,36 @@
   }
 
   var modalEl = null;
+  var abierto = false;
+
   function modal(titulo, html) {
     modalEl = modalEl || document.getElementById('modal');
     document.getElementById('modal-title').textContent = titulo;
     document.getElementById('modal-body').innerHTML = html;
     modalEl.classList.add('show');
     modalEl.setAttribute('aria-hidden', 'false');
+    if (!abierto) {
+      abierto = true;
+      // entrada de historial propia para que el botón Atrás del móvil cierre el modal
+      history.pushState({ municipia: true, modal: true }, '', location.hash || '');
+    }
     return document.getElementById('modal-body');
   }
-  function closeModal() {
+
+  function closeModal(desdeHistorial) {
     modalEl = modalEl || document.getElementById('modal');
+    if (!modalEl.classList.contains('show')) return;
     modalEl.classList.remove('show');
     modalEl.setAttribute('aria-hidden', 'true');
+    var estaba = abierto;
+    abierto = false;
+    // al cerrar por código se sustituye la entrada del modal, sin navegar
+    if (estaba && !desdeHistorial && global.App && global.App.estado) {
+      history.replaceState(global.App.estado(), '', '#' + global.App.vista());
+    }
   }
+
+  function modalAbierto() { return abierto; }
 
   function fmtFecha(iso) {
     if (!iso) return '—';
@@ -86,7 +103,7 @@
   }
 
   global.UI = {
-    esc: esc, toast: toast, modal: modal, closeModal: closeModal,
+    esc: esc, toast: toast, modal: modal, closeModal: closeModal, modalAbierto: modalAbierto,
     fmtFecha: fmtFecha, fmtHora: fmtHora, desde: desde, eur: eur,
     iniciales: iniciales, area: area, usuario: usuario,
     chipEstado: chipEstado, chipPrioridad: chipPrioridad, colorEstado: colorEstado,
