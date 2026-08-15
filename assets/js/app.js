@@ -36,6 +36,7 @@
     global.scrollTo({ top: 0, behavior: 'smooth' });
     cerrarSidebar();
     actualizarFab();
+    document.getElementById('btn-back').classList.toggle('is-hidden', id === 'dashboard');
   }
 
   var App = {
@@ -225,6 +226,11 @@
 
     document.getElementById('fab-chat').addEventListener('click', function () {
       App.go(vistaActual === 'chat' ? vistaPrevia : 'chat');
+    });
+
+    document.getElementById('btn-back').addEventListener('click', function (e) {
+      e.stopPropagation();
+      history.back();
     });
 
     document.getElementById('btn-alerts').addEventListener('click', function () {
