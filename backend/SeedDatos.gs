@@ -178,7 +178,7 @@ function cargarDatosDemo() {
     v.opciones.forEach(function (o, i) { votacionesOpciones.push({ id: v.id + '-op' + (i + 1), votacion_id: v.id, opcion: o.o, votos: o.v }); });
   });
 
-  var proyectosPlanos = PROYECTOS.map(function (p) {
+  var proyectosPlanas = PROYECTOS.map(function (p) {
     return { id: p.id, nombre: p.nombre, area: p.area, estado: p.estado, avance: p.avance, presupuesto: p.presupuesto, gastado: p.gastado, inicio: p.inicio, fin: p.fin, responsable: p.responsable, proveedor: p.proveedor };
   });
   var incidenciasPlanas = INCIDENCIAS.map(function (i) {
