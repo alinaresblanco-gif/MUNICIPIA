@@ -6,7 +6,7 @@
   var SESSION_KEY = 'municipia.session';
 
   /* URL /exec del despliegue del Apps Script (backend en Google Sheets) */
-  var BACKEND_URL = 'https://script.google.com/macros/s/AKfycbwRJPOs-nMPLr3j6t-xh8N80n3pAJQpr7fDwPtOF9TgIX0-5FMyfNHA3E1TdGeKY9C4bw/exec';
+  var BACKEND_URL = 'https://script.google.com/macros/s/AKfycbxJaWVPMlNjReozxyNk9nUyjonuONaO2xzr0tWPZ1fQEJO-azfp-gTpQ1GITdxA92LM/exec';
 
   /* Colecciones cuyos campos anidados viven en tablas hija en el backend */
   var HIJOS = {
