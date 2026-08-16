@@ -274,8 +274,9 @@
 
   /* ---------- Arranque ---------- */
   document.addEventListener('DOMContentLoaded', function () {
-    Store.init(global.SEED);
-    Auth.sincronizarUsuariosBase().then(function () {
+    Store.init(global.SEED).then(function () {
+      return Auth.sincronizarUsuariosBase();
+    }).then(function () {
       initAuthUI();
       initShell();
       var u = Auth.actual();

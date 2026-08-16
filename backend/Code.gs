@@ -23,6 +23,7 @@ function doGet(e) {
   try {
     var accion = e.parameter.accion;
     var tabla = e.parameter.tabla;
+    if (accion === 'listarTodo') return responder(listarTodo());
     if (accion === 'listar') return responder(listar(tabla));
     if (accion === 'buscar') return responder(buscarPorId(tabla, e.parameter.id));
     if (accion === 'buscarPorCampo') return responder(buscarPorCampo(tabla, e.parameter.campo, e.parameter.valor));
@@ -44,6 +45,7 @@ function doPost(e) {
       case 'insertar': resultado = insertar(tabla, body.datos || {}); break;
       case 'actualizar': resultado = actualizar(tabla, body.id, body.datos || {}); break;
       case 'eliminar': resultado = eliminar(tabla, body.id); break;
+      case 'listarTodo': resultado = listarTodo(); break;
       case 'listar': resultado = listar(tabla); break;
       case 'buscar': resultado = buscarPorId(tabla, body.id); break;
       case 'buscarPorCampo': resultado = buscarPorCampo(tabla, body.campo, body.valor); break;
@@ -90,6 +92,13 @@ function buscarPorId(tabla, id) {
     if (String(registros[i].id) === String(id)) return registros[i];
   }
   return null;
+}
+
+/* Devuelve todas las tablas de una vez, para cargar la app en una sola petición. */
+function listarTodo() {
+  var out = {};
+  Object.keys(ESQUEMA).forEach(function (tabla) { out[tabla] = listar(tabla); });
+  return out;
 }
 
 function buscarPorCampo(tabla, campo, valor) {

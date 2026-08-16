@@ -5,6 +5,24 @@
   var KEY = 'municipia.db.v1';
   var SESSION_KEY = 'municipia.session';
 
+  /* URL /exec del despliegue del Apps Script (backend en Google Sheets) */
+  var BACKEND_URL = 'https://script.google.com/macros/s/AKfycbwRJPOs-nMPLr3j6t-xh8N80n3pAJQpr7fDwPtOF9TgIX0-5FMyfNHA3E1TdGeKY9C4bw/exec';
+
+  /* Colecciones cuyos campos anidados viven en tablas hija en el backend */
+  var HIJOS = {
+    incidencias: {
+      historial: { tabla: 'incidencias_historial', fk: 'incidencia_id', mapa: function (x) { return { fecha: x.f, texto: x.t }; } }
+    },
+    proyectos: {
+      equipo: { tabla: 'proyectos_equipo', fk: 'proyecto_id', mapa: function (x) { return { usuario_id: x }; } },
+      riesgos: { tabla: 'proyectos_riesgos', fk: 'proyecto_id', mapa: function (x) { return { riesgo: x.r, nivel: x.n }; } },
+      hitos: { tabla: 'proyectos_hitos', fk: 'proyecto_id', mapa: function (x) { return { descripcion: x.h, completado: x.ok }; } }
+    },
+    votaciones: {
+      opciones: { tabla: 'votaciones_opciones', fk: 'votacion_id', mapa: function (x) { return { opcion: x.o, votos: x.v }; } }
+    }
+  };
+
   var db = null;
 
   function load() {
@@ -63,6 +81,7 @@
     if (!db[collection]) db[collection] = [];
     db[collection].unshift(obj);
     save();
+    pushInsert(collection, obj);
     return obj;
   }
 
@@ -70,8 +89,10 @@
     var arr = db[collection] || [];
     for (var i = 0; i < arr.length; i++) {
       if (arr[i].id === id) {
+        var previo = JSON.parse(JSON.stringify(arr[i]));
         Object.assign(arr[i], patch);
         save();
+        pushUpdate(collection, id, patch, previo);
         return arr[i];
       }
     }
@@ -81,6 +102,107 @@
   function remove(collection, id) {
     db[collection] = (db[collection] || []).filter(function (x) { return x.id !== id; });
     save();
+    pushRemove(collection, id);
+  }
+
+  /* ---- Sincronización remota (backend Apps Script / Google Sheets) ---- */
+
+  function enviar(accion, payload) {
+    if (!BACKEND_URL) return Promise.resolve(null);
+    var cuerpo = Object.assign({ accion: accion }, payload);
+    return fetch(BACKEND_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(cuerpo)
+    }).then(function (r) { return r.json(); })
+      .catch(function (err) { console.warn('MUNICIPIA: fallo al sincronizar con el backend.', accion, err); return null; });
+  }
+
+  function pushInsert(collection, obj) {
+    if (!BACKEND_URL) return;
+    var hijos = HIJOS[collection];
+    var plano = obj;
+    if (hijos) {
+      plano = {};
+      Object.keys(obj).forEach(function (k) { if (!hijos[k]) plano[k] = obj[k]; });
+    }
+    enviar('insertar', { tabla: collection, datos: plano });
+    if (hijos) {
+      Object.keys(hijos).forEach(function (campo) {
+        (obj[campo] || []).forEach(function (item) { insertarHijo(hijos[campo], obj.id, item); });
+      });
+    }
+  }
+
+  function pushUpdate(collection, id, patch, previo) {
+    if (!BACKEND_URL) return;
+    var hijos = HIJOS[collection];
+    var patchPlano = patch;
+    if (hijos) {
+      patchPlano = {};
+      Object.keys(patch).forEach(function (k) {
+        if (hijos[k]) return;
+        patchPlano[k] = patch[k];
+      });
+    }
+    if (Object.keys(patchPlano).length) enviar('actualizar', { tabla: collection, id: id, datos: patchPlano });
+    if (hijos) {
+      Object.keys(hijos).forEach(function (campo) {
+        if (!patch[campo]) return;
+        var antes = (previo[campo] || []).length;
+        patch[campo].slice(antes).forEach(function (item) { insertarHijo(hijos[campo], id, item); });
+      });
+    }
+  }
+
+  function pushRemove(collection, id) {
+    if (!BACKEND_URL) return;
+    enviar('eliminar', { tabla: collection, id: id });
+  }
+
+  function insertarHijo(def, padreId, item) {
+    var fila = def.mapa(item);
+    fila[def.fk] = padreId;
+    enviar('insertar', { tabla: def.tabla, datos: fila });
+  }
+
+  function pull() {
+    if (!BACKEND_URL) return Promise.resolve(null);
+    return fetch(BACKEND_URL + '?accion=listarTodo')
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res || !res.ok) throw new Error(res && res.error);
+        return reconstruir(res.datos);
+      })
+      .catch(function (err) { console.warn('MUNICIPIA: sin conexión con el backend, se usan datos locales.', err); return null; });
+  }
+
+  /* Reconstruye los arrays anidados (historial, equipo, riesgos, hitos, opciones) a partir de las tablas hija */
+  function reconstruir(datos) {
+    var out = {};
+    Object.keys(datos).forEach(function (t) { out[t] = datos[t]; });
+
+    (out.incidencias || []).forEach(function (inc) {
+      inc.historial = (out.incidencias_historial || [])
+        .filter(function (h) { return h.incidencia_id === inc.id; })
+        .map(function (h) { return { f: h.fecha, t: h.texto }; });
+    });
+
+    (out.proyectos || []).forEach(function (p) {
+      p.equipo = (out.proyectos_equipo || []).filter(function (x) { return x.proyecto_id === p.id; }).map(function (x) { return x.usuario_id; });
+      p.riesgos = (out.proyectos_riesgos || []).filter(function (x) { return x.proyecto_id === p.id; }).map(function (x) { return { r: x.riesgo, n: x.nivel }; });
+      p.hitos = (out.proyectos_hitos || []).filter(function (x) { return x.proyecto_id === p.id; }).map(function (x) { return { h: x.descripcion, ok: !!x.completado }; });
+    });
+
+    (out.votaciones || []).forEach(function (v) {
+      v.opciones = (out.votaciones_opciones || []).filter(function (o) { return o.votacion_id === v.id; }).map(function (o) { return { o: o.opcion, v: +o.votos }; });
+      v.votantes = (out.votaciones_votos || []).filter(function (x) { return x.votacion_id === v.id; });
+    });
+
+    delete out.incidencias_historial;
+    delete out.proyectos_equipo; delete out.proyectos_riesgos; delete out.proyectos_hitos;
+    delete out.votaciones_opciones; delete out.votaciones_votos;
+    return out;
   }
 
   function find(collection, id) {
@@ -108,11 +230,16 @@
     data: function () { return db; },
     init: function (seedFactory) {
       load();
-      if (!db || !db.usuarios) {
-        db = seedFactory();
-        save();
-      }
-      return db;
+      return pull().then(function (remoto) {
+        if (remoto) {
+          db = remoto;
+          save();
+        } else if (!db || !db.usuarios) {
+          db = seedFactory();
+          save();
+        }
+        return db;
+      });
     },
     reset: function (seedFactory) {
       db = seedFactory();
